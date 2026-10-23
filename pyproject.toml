@@ -1,0 +1,12 @@
+[project]
+name = "hotbox-project2"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ipykernel",
+    "pandas",
+    "matplotlib",
+    "numpy",
+    "torch",
+    "transformers",
+]
