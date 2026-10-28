@@ -1,7 +1,7 @@
 [project]
-name = "hotbox-project2"
+name = "aif-project2"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "ipykernel",
     "pandas",
