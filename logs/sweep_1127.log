@@ -1,0 +1,75 @@
+skip monot5_lr1e-05_ep2_neg1
+Loading weights:   0%|          | 0/511 [00:00<?, ?it/s]Loading weights: 100%|██████████| 511/511 [00:00<00:00, 21537.13it/s]
+  epoch 1 batch 200  loss 0.7778  0.34s/batch
+  epoch 1 batch 400  loss 0.6437  0.34s/batch
+  epoch 1 batch 600  loss 0.5784  0.33s/batch
+  epoch 1 batch 800  loss 0.5397  0.33s/batch
+  epoch 1 batch 1000  loss 0.5172  0.33s/batch
+  epoch 1 batch 1200  loss 0.4992  0.33s/batch
+  epoch 1 batch 1400  loss 0.4818  0.33s/batch
+  epoch 1 batch 1600  loss 0.4716  0.33s/batch
+  epoch 1 batch 1800  loss 0.4644  0.33s/batch
+  epoch 1 batch 2000  loss 0.4598  0.33s/batch
+  epoch 1 batch 2200  loss 0.4533  0.33s/batch
+  epoch 1 batch 2400  loss 0.4468  0.33s/batch
+[monot5_lr1e-05_ep2_neg3] epoch 1: loss 0.4444  gold@1 45.66  gold@2 50.30  mrr 0.4996
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:04<00:00,  4.64s/it]Writing model shards: 100%|██████████| 1/1 [00:04<00:00,  4.64s/it]
+  epoch 2 batch 200  loss 0.3407  0.32s/batch
+  epoch 2 batch 400  loss 0.3476  0.32s/batch
+  epoch 2 batch 600  loss 0.3476  0.32s/batch
+  epoch 2 batch 800  loss 0.3526  0.32s/batch
+  epoch 2 batch 1000  loss 0.3578  0.32s/batch
+  epoch 2 batch 1200  loss 0.3533  0.32s/batch
+  epoch 2 batch 1400  loss 0.3532  0.32s/batch
+  epoch 2 batch 1600  loss 0.3494  0.32s/batch
+  epoch 2 batch 1800  loss 0.3512  0.32s/batch
+  epoch 2 batch 2000  loss 0.3502  0.32s/batch
+  epoch 2 batch 2200  loss 0.3489  0.32s/batch
+  epoch 2 batch 2400  loss 0.3495  0.32s/batch
+[monot5_lr1e-05_ep2_neg3] epoch 2: loss 0.3492  gold@1 45.86  gold@2 50.10  mrr 0.5007
+Loading weights:   0%|          | 0/511 [00:00<?, ?it/s]Loading weights: 100%|██████████| 511/511 [00:00<00:00, 22355.74it/s]
+  epoch 1 batch 200  loss 0.6741  0.33s/batch
+  epoch 1 batch 400  loss 0.6158  0.32s/batch
+  epoch 1 batch 600  loss 0.5918  0.32s/batch
+  epoch 1 batch 800  loss 0.5786  0.32s/batch
+  epoch 1 batch 1000  loss 0.5608  0.32s/batch
+  epoch 1 batch 1200  loss 0.5485  0.32s/batch
+[monot5_lr3e-05_ep2_neg1] epoch 1: loss 0.5436  gold@1 45.86  gold@2 49.90  mrr 0.5003
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:04<00:00,  4.72s/it]Writing model shards: 100%|██████████| 1/1 [00:04<00:00,  4.72s/it]
+  epoch 2 batch 200  loss 0.3973  0.32s/batch
+  epoch 2 batch 400  loss 0.4062  0.32s/batch
+  epoch 2 batch 600  loss 0.4001  0.32s/batch
+  epoch 2 batch 800  loss 0.3955  0.32s/batch
+  epoch 2 batch 1000  loss 0.3975  0.32s/batch
+  epoch 2 batch 1200  loss 0.3986  0.32s/batch
+[monot5_lr3e-05_ep2_neg1] epoch 2: loss 0.3979  gold@1 46.06  gold@2 50.30  mrr 0.5018
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:04<00:00,  4.74s/it]Writing model shards: 100%|██████████| 1/1 [00:04<00:00,  4.74s/it]
+Loading weights:   0%|          | 0/511 [00:00<?, ?it/s]Loading weights: 100%|██████████| 511/511 [00:00<00:00, 22242.52it/s]
+  epoch 1 batch 200  loss 0.6750  0.32s/batch
+  epoch 1 batch 400  loss 0.5624  0.32s/batch
+  epoch 1 batch 600  loss 0.5212  0.32s/batch
+  epoch 1 batch 800  loss 0.4944  0.32s/batch
+  epoch 1 batch 1000  loss 0.4795  0.32s/batch
+  epoch 1 batch 1200  loss 0.4653  0.32s/batch
+  epoch 1 batch 1400  loss 0.4514  0.32s/batch
+  epoch 1 batch 1600  loss 0.4429  0.32s/batch
+  epoch 1 batch 1800  loss 0.4362  0.32s/batch
+  epoch 1 batch 2000  loss 0.4333  0.32s/batch
+  epoch 1 batch 2200  loss 0.4282  0.32s/batch
+  epoch 1 batch 2400  loss 0.4226  0.32s/batch
+[monot5_lr3e-05_ep2_neg3] epoch 1: loss 0.4201  gold@1 46.06  gold@2 50.51  mrr 0.5018
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:04<00:00,  4.31s/it]Writing model shards: 100%|██████████| 1/1 [00:04<00:00,  4.31s/it]
+  epoch 2 batch 200  loss 0.2784  0.32s/batch
+  epoch 2 batch 400  loss 0.2861  0.32s/batch
+  epoch 2 batch 600  loss 0.2829  0.32s/batch
+  epoch 2 batch 800  loss 0.2855  0.32s/batch
+  epoch 2 batch 1000  loss 0.2888  0.32s/batch
+  epoch 2 batch 1200  loss 0.2867  0.32s/batch
+  epoch 2 batch 1400  loss 0.2860  0.32s/batch
+  epoch 2 batch 1600  loss 0.2829  0.32s/batch
+  epoch 2 batch 1800  loss 0.2840  0.32s/batch
+  epoch 2 batch 2000  loss 0.2837  0.32s/batch
+  epoch 2 batch 2200  loss 0.2825  0.32s/batch
+  epoch 2 batch 2400  loss 0.2819  0.32s/batch
+[monot5_lr3e-05_ep2_neg3] epoch 2: loss 0.2818  gold@1 46.26  gold@2 50.10  mrr 0.5010
+Best: monot5_lr1e-05_ep2_neg1 gold@2 51.11 -> /home/zsidhu/project2/outputs/scorer_runs/monot5_lr1e-05_ep2_neg1/best

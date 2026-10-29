@@ -18,6 +18,8 @@ import time
 from utils import config
 
 DATA_PATH = os.path.join(config.DIR_DATA, "dev.jsonl")
+TRAIN_PATH = os.path.join(config.DIR_DATA, "train.jsonl")
+TEST_PATH = os.path.join(config.DIR_DATA, "test.jsonl")
 OUT_DIR = config.DIR_OUTPUTS
 CACHE_PATH = os.path.join(OUT_DIR, "bm25_top15.json")
 SCORES_PATH = os.path.join(OUT_DIR, "t5_scores.jsonl")
@@ -76,6 +78,9 @@ def parse_doc(raw):
 
 
 def open_searcher(index=INDEX):
+    # Pyserini builds an OpenAI client while importing, and recent `openai` versions raise without a key.
+    # BM25 never calls OpenAI, so a placeholder is enough. A real key in the environment is left alone.
+    os.environ.setdefault("OPENAI_API_KEY", "unused-by-bm25")
     from pyserini.search.lucene import LuceneSearcher
 
     if os.path.isdir(index):
@@ -140,6 +145,11 @@ def build_cache(questions, searcher=None, index=INDEX, cache_path=CACHE_PATH, de
 
 # monoT5 scoring
 
+def native_bf16(torch):
+    """True on A30/A40 (compute capability 8+). V100s report bfloat16 as supported through slow emulation."""
+    return torch.cuda.is_available() and torch.cuda.get_device_capability(0)[0] >= 8
+
+
 class T5Scorer:
     def __init__(self, model_name=T5_MODEL, tokenizer_name=None, batch_size=T5_BATCH_SIZE,
                  max_length=512, dtype=None, device=None):
@@ -149,7 +159,7 @@ class T5Scorer:
         self.torch = torch
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         if dtype is None:
-            dtype = "bfloat16" if self.device == "cuda" and torch.cuda.is_bf16_supported() else "float32"
+            dtype = "bfloat16" if self.device == "cuda" and native_bf16(torch) else "float32"
         try:
             self.tok = AutoTokenizer.from_pretrained(tokenizer_name or model_name)
         except (OSError, ValueError):
@@ -210,7 +220,7 @@ def score_questions(questions, retriever, scorer, scores_path=SCORES_PATH, depth
             dt = time.perf_counter() - t0
             for h, s in zip(hits, scores):
                 h["t5"] = float(s)
-            f.write(json.dumps({"id": q["_id"], "question": q["question"], "gold": q["answer"],
+            f.write(json.dumps({"id": q["_id"], "question": q["question"], "gold": q.get("answer", ""),
                                 "type": q.get("type", ""), "score_s": dt, "hits": hits}) + "\n")
             if (i + 1) % 50 == 0:
                 f.flush()
