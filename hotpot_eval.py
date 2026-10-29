@@ -1,5 +1,5 @@
 import sys
-# import ujson as json
+import json  # was commented out, so eval() raised NameError
 import re
 import string
 from collections import Counter

@@ -1,0 +1,53 @@
+name, memory.total [MiB]
+Tesla V100-PCIE-16GB, 16384 MiB
+/scratch/scholar/zsidhu/envs/retr/lib/python3.10/site-packages/torch/cuda/__init__.py:484: UserWarning: Found GPU0 Tesla V100-PCIE-16GB which is of compute capability (CC) 7.0.
+The following list shows the CCs this version of PyTorch was built for and the hardware CCs it supports:
+- 7.5 which supports hardware CC >=7.5,<8.0
+- 8.0 which supports hardware CC >=8.0,<9.0 except {8.7}
+- 8.6 which supports hardware CC >=8.6,<9.0 except {8.7}
+- 9.0 which supports hardware CC >=9.0,<10.0
+- 10.0 which supports hardware CC >=10.0,<11.0 except {10.1}
+- 12.0 which supports hardware CC >=12.0,<13.0
+Your installed torch==2.14.1+cu130 does not include kernels for this GPU. Reinstall the same version against a CUDA build that does, e.g.:
+  For CUDA 12.6 use pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cu126
+  _warn_unsupported_code(d, device_cc, code_ccs)
+Settings from /home/zsidhu/project2/.env
+  DIR_SCRATCH = /scratch/scholar/zsidhu
+  DIR_DATA = /home/zsidhu/project2/data
+  DIR_OUTPUTS = /home/zsidhu/project2/outputs
+  HF_HOME = /scratch/scholar/zsidhu/hf_cache
+  PYSERINI_CACHE = /scratch/scholar/zsidhu/pyserini_cache
+  JAVA_HOME = /scratch/scholar/zsidhu/envs/retr/lib/jvm
+  JAVA_VERSION = 21
+  PYSERINI_INDEX = wikipedia-dpr-100w
+  LLAMA_MODEL = meta-llama/Llama-3.1-8B-Instruct
+  LLAMA_BACKEND = hf
+Java 21
+GPU: Tesla V100-PCIE-16GB
+WARNING: Using incubator modules: jdk.incubator.vector
+Oct 29, 2026 10:28:59 AM org.apache.lucene.store.MemorySegmentIndexInputProvider <init>
+INFO: Using MemorySegmentIndexInput with Java 21; to disable start with -Dorg.apache.lucene.store.MMapDirectory.enableMemorySegments=false
+5183 questions, 5183 to retrieve
+256/5183
+512/5183
+768/5183
+1024/5183
+1280/5183
+1536/5183
+1792/5183
+2048/5183
+2304/5183
+2560/5183
+2816/5183
+3072/5183
+3328/5183
+3584/5183
+3840/5183
+4096/5183
+4352/5183
+4608/5183
+4864/5183
+5120/5183
+5183/5183
+train: 4665 questions -> 2838 pools, 5104 positives (skipped 307 yes/no, 1520 with no positive in top 30)
+held out: 518 questions -> 495 gradable; oracle@15 58.18
