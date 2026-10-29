@@ -1,0 +1,160 @@
+\documentclass[11pt,twocolumn]{article}
+\usepackage[letterpaper,margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[authoryear,round]{natbib}
+\setlength{\columnsep}{0.6cm}
+\begin{document}
+\section{Methods}
+% ===================== METHODS =====================
+
+\subsection{Retrieval}
+\label{sec:retrieval}
+
+We reuse the Part 3 retriever so that any change in results comes from our new components. It is the Pyserini BM25 index \texttt{wikipedia-dpr-100w} \citep{lin2021pyserini}, which splits Wikipedia into about 21 million 100-word passages \citep{karpukhin2020dpr}. The function \texttt{retrieve(query, offset, k=5)} returns BM25 ranks $\textit{offset}+1$ through $\textit{offset}+k$, so the loop can request up to three batches of 5. To make runs repeatable, we ran BM25 once for all 1,110 dev questions and saved the top 15 passages for each.
+
+\subsection{T5 Relevance Scorer}
+\label{sec:scorer}
+
+The function \texttt{score(query, passage)} returns a confidence from 0 to 1 that the passage helps answer the question. Plain \texttt{google-t5/t5-large} was never trained to judge relevance, so we used \texttt{castorini/monot5-large-msmarco} \citep{nogueira2020monot5}, the same T5-large model \citep{raffel2020t5} fine-tuned for passage ranking on MS MARCO. The confidence is the probability of ``true'' versus ``false'' at the first decoder step (input format in Appendix~\ref{app:t5prompt}). Scoring 15 passages took 0.13 seconds per question on one A40.
+
+\subsection{Adaptive Loop and Fallback}
+\label{sec:loop}
+
+For each question, the loop retrieves 5 passages and scores them. It stops if any passage reaches the threshold $\tau$. Otherwise it fetches the next 5, up to 15. It then ranks every scored passage by confidence and passes the top two that clear $\tau$ to the generator. We keep two because HotpotQA questions usually need facts from two articles. If nothing clears $\tau$, the loop falls back to its two best passages, since Part 3 showed that Llama does far worse with no context (14.41 EM) than with one BM25 passage (25.05 EM). Because the loop never looks past the first 15 passages, we scored all 15 once and saved the scores. Any threshold or cap can then be replayed without running T5 again, and we checked that the replay picks the same passages as the live loop. Our final system uses $\tau=0.98$ and a cap of 15.
+\section{Results}
+% ===================== RESULTS =====================
+
+\subsection{Retrieval Results}
+\label{sec:retrieval_results}
+
+Before running Llama, we checked how often the gold answer appears in the two passages sent to the generator. We used the 1,050 questions whose answer is not yes or no.
+
+The scorer ranks passages better than BM25 (Table~\ref{tab:rerank}). Out of the same 15 passages, the answer is in the top one 38.0\% of the time by T5 score and 30.5\% by BM25 rank. The scores are also meaningful.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{rcccc}
+\toprule
+Top $k$ & 1 & 2 & 5 & 10 \\
+\midrule
+BM25 order & 30.5 & 36.7 & 47.9 & 54.7 \\
+T5 order & \textbf{38.0} & \textbf{44.0} & \textbf{53.4} & \textbf{56.5} \\
+\bottomrule
+\end{tabular}
+\caption{Percent of questions where the answer appears in the top $k$ of the same 15 passages, ordered by BM25 or by T5 score.}
+\label{tab:rerank}
+\end{table}
+ Only 5.5\% of passages scored below 0.1 contain the answer, compared to 50.2\% of passages scored 0.99 or higher.
+
+\begin{table}[t]
+\centering
+\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+$\tau$ & Passages scored & Stop early (\%) & Gold in selected (\%) \\
+\midrule
+BM25 top 2 & 0 & -- & 36.7 \\
+0.5 & 5.8 & 94.4 & 40.8 \\
+0.9 & 7.4 & 79.3 & 41.1 \\
+0.98 & 10.5 & 47.8 & 42.5 \\
+Score all 15 & 15.0 & 0.0 & \textbf{44.0} \\
+\bottomrule
+\end{tabular}}
+\caption{Threshold sweep with a cap of 15. ``Gold in selected'' is the percent of questions where the answer appears in the two passages passed to Llama.}
+\label{tab:sweep}
+\end{table}
+
+The scorer is also very confident, which shaped our choice of threshold. At $\tau=0.5$, the loop stopped after the first batch on 94.4\% of questions, so it barely adapted at all (Table~\ref{tab:sweep}). At $\tau=0.98$, about half the questions keep searching, and context quality rises from 40.8\% to 42.5\%. Scoring all 15 gives the upper bound of 44.0\%. A higher threshold also raises the fallback rate (52.2\% at 0.98), but at that level a fallback only means the loop searched all 15 passages before choosing. Lowering the cap to 5 or 10 lost about 0.5 to 2.5 points (Appendix~\ref{app:sweep}).
+\clearpage
+\begin{thebibliography}{4}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Karpukhin et~al.(2020)Karpukhin, Oguz, Min, Lewis, Wu, Edunov, Chen,
+  and Yih]{karpukhin2020dpr}
+Vladimir Karpukhin, Barlas Oguz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey
+  Edunov, Danqi Chen, and Wen-tau Yih.
+\newblock Dense passage retrieval for open-domain question answering.
+\newblock In \emph{Proceedings of the 2020 Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)}, pages 6769--6781, 2020.
+
+\bibitem[Lin et~al.(2021)Lin, Ma, Lin, Yang, Pradeep, and
+  Nogueira]{lin2021pyserini}
+Jimmy Lin, Xueguang Ma, Sheng-Chieh Lin, Jheng-Hong Yang, Ronak Pradeep, and
+  Rodrigo Nogueira.
+\newblock Pyserini: A {P}ython toolkit for reproducible information retrieval
+  research with sparse and dense representations.
+\newblock In \emph{Proceedings of the 44th International ACM SIGIR Conference
+  on Research and Development in Information Retrieval}, pages 2356--2362,
+  2021.
+
+\bibitem[Nogueira et~al.(2020)Nogueira, Jiang, Pradeep, and
+  Lin]{nogueira2020monot5}
+Rodrigo Nogueira, Zhiying Jiang, Ronak Pradeep, and Jimmy Lin.
+\newblock Document ranking with a pretrained sequence-to-sequence model.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  EMNLP 2020}, pages 708--718, 2020.
+
+\bibitem[Raffel et~al.(2020)Raffel, Shazeer, Roberts, Lee, Narang, Matena,
+  Zhou, Li, and Liu]{raffel2020t5}
+Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael
+  Matena, Yanqi Zhou, Wei Li, and Peter~J. Liu.
+\newblock Exploring the limits of transfer learning with a unified text-to-text
+  transformer.
+\newblock \emph{Journal of Machine Learning Research}, 21\penalty0
+  (140):\penalty0 1--67, 2020.
+
+\end{thebibliography}
+\appendix
+% ===================== APPENDIX =====================
+
+\section{Full Retrieval Sweep}
+\label{app:sweep}
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{rlcccc}
+\toprule
+Cap & $\tau$ & Passages & Stop & Fallback & Gold in \\
+ & & scored & early (\%) & (\%) & selected (\%) \\
+\midrule
+5 & 0.5 & 5.00 & 90.9 & 9.1 & 40.8 \\
+5 & 0.9 & 5.00 & 74.6 & 25.4 & 40.5 \\
+5 & 0.98 & 5.00 & 44.1 & 55.9 & 40.0 \\
+5 & score all & 5.00 & 0.0 & 100.0 & 40.9 \\
+\midrule
+10 & 0.5 & 5.45 & 93.2 & 6.9 & 41.0 \\
+10 & 0.9 & 6.27 & 77.6 & 22.4 & 40.9 \\
+10 & 0.98 & 7.79 & 46.5 & 53.5 & 42.0 \\
+10 & score all & 10.00 & 0.0 & 100.0 & 43.4 \\
+\midrule
+15 & 0.5 & 5.80 & 94.4 & 5.6 & 40.8 \\
+15 & 0.9 & 7.39 & 79.3 & 20.7 & 41.1 \\
+15 & 0.98 & 10.47 & 47.8 & 52.2 & 42.5 \\
+15 & score all & 15.00 & 0.0 & 100.0 & 44.0 \\
+\bottomrule
+\end{tabular}}
+\caption{Retrieval sweep over the passage cap and threshold $\tau$. All settings keep the top two passages.}
+\end{table}
+
+\section{T5 Scorer Input}
+\label{app:t5prompt}
+
+Each passage is scored with this input. The confidence is the probability of the token ``true'' after a softmax over the ``true'' and ``false'' logits at the first decoder step.
+
+\begin{center}
+\small
+\texttt{Query: \{question\} Document: \{title\}. \{passage text\} Relevant:}
+\end{center}
+\end{document}
