@@ -1,0 +1,7 @@
+name,init,lr,epochs,neg_ratio,batch_size,grad_accum,best_epoch,gold@1,gold@2,gold@5,mrr,checkpoint
+base_monot5-large-msmarco,castorini/monot5-large-msmarco,0,0,0,,,,36.77,44.85,54.14,0.4407,
+bm25_order,,0,0,0,,,,29.09,37.98,48.69,0.3749,
+monot5_lr1e-05_ep2_neg1,castorini/monot5-large-msmarco,1e-05,2,1,8,2,1,44.44,51.11,56.97,0.495,/home/zsidhu/project2/outputs/scorer_runs/monot5_lr1e-05_ep2_neg1/best
+monot5_lr1e-05_ep2_neg3,castorini/monot5-large-msmarco,1e-05,2,3,8,2,1,45.66,50.3,56.97,0.4996,/home/zsidhu/project2/outputs/scorer_runs/monot5_lr1e-05_ep2_neg3/best
+monot5_lr3e-05_ep2_neg1,castorini/monot5-large-msmarco,3e-05,2,1,8,2,2,46.06,50.3,56.77,0.5018,/home/zsidhu/project2/outputs/scorer_runs/monot5_lr3e-05_ep2_neg1/best
+monot5_lr3e-05_ep2_neg3,castorini/monot5-large-msmarco,3e-05,2,3,8,2,1,46.06,50.51,56.57,0.5018,/home/zsidhu/project2/outputs/scorer_runs/monot5_lr3e-05_ep2_neg3/best
