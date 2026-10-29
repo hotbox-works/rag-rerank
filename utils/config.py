@@ -1,6 +1,6 @@
 import os
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # the project folder, above utils/
 ENV_PATH = os.path.join(ROOT, ".env")
 
 
