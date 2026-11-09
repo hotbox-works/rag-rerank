@@ -9,4 +9,16 @@ dependencies = [
     "numpy",
     "torch",
     "transformers",
+    "accelerate",
+    "sentencepiece",  # T5 tokenizer
+    "protobuf",       # T5 tokenizer conversion
+    "pyserini",       # BM25; needs a Java 21+ JDK (JAVA_HOME in .env)
+    "faiss-cpu",      # required by pyserini imports
 ]
+
+[project.optional-dependencies]
+vllm = ["vllm"]      # faster Llama generation: set LLAMA_BACKEND=vllm in .env
+dev = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
