@@ -11,7 +11,7 @@ def normalize_answer(s):
         return re.sub(r'\b(a|an|the)\b', ' ', text)
 
     def white_space_fix(text):
-        return ' '.join(text.split())
+        return ' '.join(text.split()) 
 
     def remove_punc(text):
         exclude = set(string.punctuation)
